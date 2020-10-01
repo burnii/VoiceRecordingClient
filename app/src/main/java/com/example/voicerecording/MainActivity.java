@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
             byte[] message = messageBuilder.build(name, contentStep);
 
-            // Ohne kurz zu warten entstehen Störgeräusche TODO prüfen
+            // Ohne kurz zu warten entstehen Störgeräusche TODO prüfenj
             try {
                 Thread.sleep(1);
             } catch (InterruptedException e) {
