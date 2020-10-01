@@ -13,7 +13,7 @@ public class SocketHandler {
 
     public static Socket ensureSocket() throws IOException {
             if(mTcpSocket == null) {
-                mTcpSocket = new Socket("192.168.178.45", 4000);
+                mTcpSocket = new Socket("192.168.178.45", 4001);
             }
 
 

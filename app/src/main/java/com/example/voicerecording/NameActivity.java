@@ -36,8 +36,6 @@ public class NameActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 123);
         }
 
-        Log.d("asd", Build.MODEL);
-
         setContentView(R.layout.activity_name);
     }
 

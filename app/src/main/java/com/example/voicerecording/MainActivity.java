@@ -114,41 +114,63 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            Thread sendThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while(isRecording || mAudioList.size() > 0) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        if(isUdp) {
+                            sendUdp();
+                        } else {
+                            sendTcp();
+                        }
+                    }
+                }
+            });
+
             recordingTread.start();
+            sendThread.start();
         }
     }
 
     public void send(View view) {
-        if(this.isUdp) {
-            this.sendUdp();
-        } else {
-            this.sendTcp();
-        }
+
     }
 
     public void sendTcp() {
-        byte[] audioContent = new byte[mAudioList.size()];
+        ArrayList<Byte> temp = new ArrayList<Byte>(mAudioList);
+        mAudioList = new ArrayList<Byte>();
+
+        byte[] audioContent = new byte[temp.size()];
         int k = 0;
-        for (Byte b : mAudioList) {
+        for (Byte b : temp) {
             audioContent[k++] = b.byteValue();
         }
-        mAudioList = new ArrayList<Byte>();
 
         byte[] message = new AudioMessageBuilder(false).build(this.name, audioContent);
 
-        try {
-            mSocket.getOutputStream().write(message);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(audioContent.length > 0) {
+            try {
+                mSocket.getOutputStream().write(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void sendUdp() {
-        int size = mAudioList.size();
+        ArrayList<Byte> temp = new ArrayList<Byte>(mAudioList);
+        mAudioList = new ArrayList<Byte>();
+
+        int size = temp.size();
         byte[] audioContent = new byte[size];
 
-        for(int i = 0; i < mAudioList.size(); i++) {
-            audioContent[i] = mAudioList.get(i);
+        for(int i = 0; i < temp.size(); i++) {
+            audioContent[i] = temp.get(i);
         }
 
         int steps = 487;
@@ -166,14 +188,22 @@ public class MainActivity extends AppCompatActivity {
 
             byte[] message = messageBuilder.build(name, contentStep);
 
+            // Ohne kurz zu warten entstehen Störgeräusche TODO prüfen
             try {
                 Thread.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            Thread thread = new Thread(new SendUdpRunnable(message));
-            thread.start();
+            try {
+                DatagramSocket socket = SocketHandler.ensureDatagramSocket();
+                InetAddress serverAddress = InetAddress.getByName("192.168.178.45");
+
+                DatagramPacket packet = new DatagramPacket(message, message.length, serverAddress, 4000);
+                socket.send(packet);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
