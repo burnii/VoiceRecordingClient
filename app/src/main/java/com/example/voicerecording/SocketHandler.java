@@ -11,24 +11,22 @@ public class SocketHandler {
     private static Socket mTcpSocket;
     private static DatagramSocket udpSocket;
 
-    public static Socket ensureSocket() throws IOException {
+        public static Socket ensureSocket() throws IOException {
             if(mTcpSocket == null) {
-                mTcpSocket = new Socket("192.168.178.45", 4001);
+                mTcpSocket = new Socket("100.119.14.185", 4001);
             }
 
-
-
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                try {
-                    mTcpSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                public void run() {
+                    try {
+                        mTcpSocket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
 
-        return mTcpSocket;
+            return mTcpSocket;
     }
 
     public static DatagramSocket ensureDatagramSocket() throws IOException {

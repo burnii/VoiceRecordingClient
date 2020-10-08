@@ -1,11 +1,14 @@
 package com.example.voicerecording;
 
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.content.res.TypedArrayUtils;
 
 public class AudioMessageBuilder {
     public boolean isUdp;
+
+    public int udpCount = 1;
 
     public AudioMessageBuilder(boolean isUdp) {
         this.isUdp = isUdp;
@@ -24,7 +27,7 @@ public class AudioMessageBuilder {
     }
 
     private byte[] buildUdpMessage(String username, byte[] content) {
-        byte[] ack = this.buildAcknowledgement((username));
+        byte[] ack = this.buildAcknowledgement(username);
 
         byte[] message = Helper.combineArrays(ack, content);
 
@@ -36,17 +39,19 @@ public class AudioMessageBuilder {
     }
 
     public byte[] buildAcknowledgement(String username) {
-        StringBuilder ack = new StringBuilder(username + ";" + System.currentTimeMillis() + ";" + Build.MODEL);
+        StringBuilder ack = new StringBuilder(username + ";" + System.currentTimeMillis() + ";" + Build.MODEL + ";" + udpCount);
 
-        while(ack.length() < 25) {
+        while(ack.length() < 40) {
             ack.append(" ");
         }
 
         String value = ack.toString();
 
-        if(ack.length() > 25) {
-            value = ack.substring(0, 25);
+        if(ack.length() > 40) {
+            value = ack.substring(0, 40);
         }
+
+        udpCount++;
 
         return value.getBytes();
     }

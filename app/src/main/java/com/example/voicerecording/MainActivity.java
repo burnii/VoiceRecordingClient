@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isUdp;
 
+    public int len = 0;
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -173,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
             audioContent[i] = temp.get(i);
         }
 
-        int steps = 487;
+        int steps = 472;
 
         AudioMessageBuilder messageBuilder = new AudioMessageBuilder(true);
 
@@ -188,16 +190,20 @@ public class MainActivity extends AppCompatActivity {
 
             byte[] message = messageBuilder.build(name, contentStep);
 
-            // Ohne kurz zu warten entstehen Störgeräusche TODO prüfenj
+            len++;
+            System.out.println("LENGTH: ");
+            System.out.println(len);
+
+            // Ohne kurz zu warten entstehen Störgeräusche TODO prüfen
             try {
-                Thread.sleep(1);
+                Thread.sleep(2);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
             try {
                 DatagramSocket socket = SocketHandler.ensureDatagramSocket();
-                InetAddress serverAddress = InetAddress.getByName("192.168.178.45");
+                InetAddress serverAddress = InetAddress.getByName("100.119.14.185");
 
                 DatagramPacket packet = new DatagramPacket(message, message.length, serverAddress, 4000);
                 socket.send(packet);
