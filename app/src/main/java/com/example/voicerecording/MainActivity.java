@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+
                         if(isUdp) {
                             sendUdp();
                         } else {
@@ -135,12 +136,11 @@ public class MainActivity extends AppCompatActivity {
             });
 
             recordingTread.start();
-            sendThread.start();
+
+            if(isUdp == false) {
+                sendThread.start();
+            }
         }
-    }
-
-    public void send(View view) {
-
     }
 
     public void sendTcp() {
@@ -162,6 +162,10 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void udp(View view) {
+        this.sendUdp();
     }
 
     public void sendUdp() {
@@ -196,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Ohne kurz zu warten entstehen Störgeräusche TODO prüfen
             try {
-                Thread.sleep(2);
+                Thread.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
