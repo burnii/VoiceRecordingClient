@@ -4,6 +4,7 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Process;
 import android.os.StrictMode;
 import android.view.View;
 import android.widget.ImageButton;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AudioRecord mAudioRecorder = null;
     private int mSampleRate = 44100;
+    AudioMessageBuilder messageBuilder = new AudioMessageBuilder(true);
 
     private Socket mSocket = null;
 
@@ -121,13 +123,15 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     while(isRecording || mAudioList.size() > 0) {
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(10);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
 
                         if(isUdp) {
-                            sendUdp();
+                            if(mAudioList.size() > 512) {
+                                sendUdp();
+                            }
                         } else {
                             sendTcp();
                         }
@@ -137,9 +141,9 @@ public class MainActivity extends AppCompatActivity {
 
             recordingTread.start();
 
-            if(isUdp == false) {
-                sendThread.start();
-            }
+
+           sendThread.start();
+
         }
     }
 
@@ -172,16 +176,19 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Byte> temp = new ArrayList<Byte>(mAudioList);
         mAudioList = new ArrayList<Byte>();
 
+        android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_AUDIO);
         int size = temp.size();
         byte[] audioContent = new byte[size];
 
         for(int i = 0; i < temp.size(); i++) {
-            audioContent[i] = temp.get(i);
+            Byte value = temp.get(i);
+            if(value != null) {
+                audioContent[i] = value;
+            }
+
         }
 
         int steps = 472;
-
-        AudioMessageBuilder messageBuilder = new AudioMessageBuilder(true);
 
         for(int i = 0; i < audioContent.length; i += steps) {
             int s = i + steps;
@@ -200,10 +207,14 @@ public class MainActivity extends AppCompatActivity {
 
             // Ohne kurz zu warten entstehen Störgeräusche TODO prüfen
             try {
-                Thread.sleep(1);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+//
+//            for(int k = 0; k < message.length; k++) {
+//
+//            }
 
             try {
                 DatagramSocket socket = SocketHandler.ensureDatagramSocket();
