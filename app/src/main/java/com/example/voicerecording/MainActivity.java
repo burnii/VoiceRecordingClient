@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     while(isRecording || mAudioList.size() > 0) {
                         try {
-                            Thread.sleep(10);
+                            Thread.sleep(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -141,9 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
             recordingTread.start();
 
-
-           sendThread.start();
-
+            sendThread.start();
         }
     }
 
@@ -211,16 +209,12 @@ public class MainActivity extends AppCompatActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-//
-//            for(int k = 0; k < message.length; k++) {
-//
-//            }
 
             try {
                 DatagramSocket socket = SocketHandler.ensureDatagramSocket();
                 InetAddress serverAddress = InetAddress.getByName("100.119.14.185");
 
-                DatagramPacket packet = new DatagramPacket(message, message.length, serverAddress, 4000);
+                DatagramPacket packet = new DatagramPacket(message, message.length, serverAddress, 4001);
                 socket.send(packet);
             } catch (IOException e) {
                 e.printStackTrace();

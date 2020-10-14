@@ -31,7 +31,7 @@ public class SocketHandler {
 
     public static DatagramSocket ensureDatagramSocket() throws IOException {
         if(udpSocket == null) {
-            udpSocket = new DatagramSocket(4000);
+            udpSocket = new DatagramSocket(4001);
         }
 
         return udpSocket;
