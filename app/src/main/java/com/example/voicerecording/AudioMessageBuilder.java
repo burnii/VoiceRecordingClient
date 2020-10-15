@@ -14,6 +14,10 @@ public class AudioMessageBuilder {
         this.isUdp = isUdp;
     }
 
+    public void resetUdpCount() {
+        udpCount = 1;
+    }
+
     public byte[] build(String username, byte[] content) {
         byte[] message;
 
@@ -41,6 +45,7 @@ public class AudioMessageBuilder {
     public byte[] buildAcknowledgement(String username) {
         StringBuilder ack = new StringBuilder(username + ";" + System.currentTimeMillis() + ";" + Build.MODEL + ";" + udpCount);
 
+        System.out.println(udpCount);
         while(ack.length() < 40) {
             ack.append(" ");
         }

@@ -29,6 +29,17 @@ public class SocketHandler {
             return mTcpSocket;
     }
 
+    public static void closeTcpSocket() {
+        try {
+            if(mTcpSocket != null) {
+                mTcpSocket.close();
+                mTcpSocket = null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static DatagramSocket ensureDatagramSocket() throws IOException {
         if(udpSocket == null) {
             udpSocket = new DatagramSocket(4001);
