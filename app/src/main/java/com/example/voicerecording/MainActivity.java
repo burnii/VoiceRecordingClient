@@ -79,9 +79,9 @@ public class MainActivity extends AppCompatActivity {
 
                     if(mAudioList.size() > 0) {
                         if(Config.getInstance().isUdp) {
-                            if(mAudioList.size() > 512) {
+                            //if(mAudioList.size() > 512) {
                                 sendUdp();
-                            }
+                            //}
                         } else {
                             sendTcp();
                         }
@@ -303,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Ohne kurz zu warten entstehen Störgeräusche TODO prüfen
             try {
-                Thread.sleep(5);
+                Thread.sleep(0);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
